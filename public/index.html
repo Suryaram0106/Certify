@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ 
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+     <!-- web3.js 1.0.0 -->    
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js" integrity="sha256-nWBTbvxhJgjslRyuAKJHK+XcZPlCnmIAAMixz6EefVk=" crossorigin="anonymous"></script>
+ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+  
+    <title>Register Certificate on Blockchain</title>
+  </head>
+
+  <style>
+    p {
+       padding:5px;
+       color:green;
+       font-size:20px;
+
+     }
+    #p2{
+        display:inline;
+     }
+     h5{
+             display:inline;
+          }
+
+     h2{
+      color:blue;
+     }     
+    /*#my-div {
+    pointer-events:none;
+    }*/
+
+</style>
+
+  <body class="bg-white">
+ 
+    <div class="container">
+      <div class="py-5 text-center">
+        <h2>Register Certificate on Blockchain</h2>
+      </div>
+ 
+      <div class="row">
+        <div  class="col-md-8 order-md-2">
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span>Details of your certificate</span>
+            <span id ="countHolders" class="badge badge-secondary badge-pill">0</span>
+          </h4>
+          <div id="page" class="head">
+           <div id="content-holder" class="card d-flex px-5 py-5">
+            <div class="card-body py-5">
+              <h1 class="card-title text-center mb-5">Certificate of Completion</h1>
+              <p id="blockHash"></p>
+              <div class="card-text">
+                <p id="p2" class="text-muted">This is to certify that </p> 
+                <h5 id ="name"> </h5>
+                <p id="p2" class="text-muted"> has completed the level </p>
+                <h5 id="level"> </h5> <p id="p2" class="text-muted"> of </p> <h5 id ="coursename"> </h5> 
+                <p id="p2" class="text-muted"> course </p>
+              </div>
+            </div>
+          </div>
+         </div>
+          <br></br>
+          <div id="my-div">
+          
+          <a id="button1" href="#" >Download Certificate here</a>
+          <br></br>
+          <button>
+            <a type="button" href="ipfs.html"> Upload to IPFS </a>
+           </button> 
+           <br></br>
+          </div>
+      
+        
+         
+        </div>
+        <div id="test" class="col-md-4 order-md-1">
+          <h4 class="text-muted">Enter the Details of certificate</h4>
+              <div class="mb-3">
+                <p class="text-danger"></p>
+                <label for="username">Full Name</label>
+                <input type="text" class="form-control" id="fullName" placeholder="Full Name" required>
+              </div>
+              <div class="mb-3">
+                <p class="text-danger"></p>
+                <label for="username">Course Name</label>
+                <input type="text" class="form-control" id="courseName" placeholder="Course Name" required>
+              </div>
+              <div class="mb-3">
+                <p class="text-danger"></p>
+                <label for="username">Level of Study</label>
+                <input type="text" class="form-control" id="levelOfStudy" placeholder="Level of Study" required>
+              </div>
+            <hr class="mb-4">
+            <button id="button" class="btn btn-primary btn-lg btn-block">Register
+            </button>
+        </div>
+      </div>
+     
+
+      
+     
+    </div>
+ 
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js" ></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+    <script src="http://cdn.jsdelivr.net/g/filesaver.js" ></script>
+
+    <script>
+ 
+      // Input our code here 
+      if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+      } else {
+        // Set the provider you want from Web3.providers
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+      }
+      var abi = [
+      {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bytes16",
+          "name": "name",
+          "type": "bytes16"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "level",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes16",
+          "name": "course_name",
+          "type": "bytes16"
+        }
+      ],
+      "name": "HolderInfo",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "countHolders",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "getHolder",
+      "outputs": [
+        {
+          "internalType": "bytes16",
+          "name": "",
+          "type": "bytes16"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes16",
+          "name": "",
+          "type": "bytes16"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getHolders",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "holderAccts",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes16",
+          "name": "_name",
+          "type": "bytes16"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_level",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes16",
+          "name": "_course_name",
+          "type": "bytes16"
+        }
+      ],
+      "name": "setHolder",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ];
+      var contractAddress = "0x5B797FFCb55b5BFF2bb1c0E86f05e43EC43FD77d";
+      async function init(){
+        academy = await new web3.eth.Contract(abi, contractAddress);
+        var accounts = await web3.eth.getAccounts();
+        web3.eth.defaultAccount = accounts[0];
+      }
+      init();
+
+      async function count(){
+        academy.methods.countHolders().call().then(function(result){
+          document.getElementById('countHolders').textContent = result;
+        });
+
+      }
+
+      /*$(document).ready(function() {
+        //$('#my-div').attr('disabled', true);
+        $('input[type=button]').attr('disabled', true);
+        });
+*/
+       
+    
+      async function register(){
+        var fullName = web3.utils.asciiToHex(document.getElementById('fullName').value);
+        var levelOfStudy = document.getElementById('levelOfStudy').value;
+        var courseName = web3.utils.asciiToHex(document.getElementById('courseName').value);
+        await academy.methods.setHolder(web3.eth.defaultAccount, fullName, levelOfStudy,courseName).send({from: web3.eth.defaultAccount, gas: 3000000}).on('receipt', function(receipt){
+          //document.getElementById('error').style.display = 'none';
+          //document.getElementById('blockHash').value = receipt.blockHash;
+          //document.getElementById('name').value = web3.utils.hexToAscii(receipt.events.HolderInfo.returnValues.name);
+          //document.getElementById('level').value = receipt.events.HolderInfo.returnValues.level;
+          //document.getElementById('coursename').innerHTML = web3.utils.hexToAscii(receipt.events.HolderInfo.returnValues.course_name);
+          //$('#gg').html("your new header");
+          $('#blockHash').html(receipt.blockHash);
+          $('#name').html(web3.utils.hexToAscii(receipt.events.HolderInfo.returnValues.name));
+          $('#level').html(receipt.events.HolderInfo.returnValues.level);
+          $('#coursename').html(web3.utils.hexToAscii(receipt.events.HolderInfo.returnValues.course_name));
+          
+      
+
+          count();
+        }).on('error', function(error){
+          //document.getElementById('error').style.display = 'block';
+          //document.getElementById('error').textContent = error;
+        });
+      }
+      document.getElementById('button').addEventListener('click', register);
+
+
+
+
+
+
+async function preview_img(){
+
+
+const div =  document.getElementById('preview');
+await domtoimage.toPng(document.getElementById('content-holder'))
+.then(function (dataUrl) {
+const img = new Image();
+img.src = dataUrl;
+div.appendChild(img);
+})
+.catch((error) => {
+console.error(error);
+});
+
+}
+//document.getElementById('view').addEventListener('click', preview_img);
+
+
+
+async function download_img(){
+
+     await domtoimage.toBlob(document.getElementById('page'))
+    .then(function (blob) {
+        window.saveAs(blob, 'mycertificate.png');
+      
+    });
+  
+}
+
+
+document.getElementById('button1').addEventListener('click', download_img);
+
+</script>
+
+  </body>
+</html>
