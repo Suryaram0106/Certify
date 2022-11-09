@@ -101,6 +101,10 @@
             <hr class="mb-4">
             <button id="button" class="btn btn-primary btn-lg btn-block">Register
             </button>
+
+            <button id="button-get" class="btn btn-primary btn-lg btn-block">Get
+            </button>
+
         </div>
       </div>
      
@@ -269,6 +273,13 @@
       async function count(){
         academy.methods.countHolders().call().then(function(result){
           document.getElementById('countHolders').textContent = result;
+          console.log(result)
+        });
+
+
+        academy.methods.getHolders().call().then(function(result){
+          //document.getElementById('countHolders').textContent = result;
+          console.log(result)
         });
 
       }
@@ -280,6 +291,16 @@
 */
        
     
+
+async function getAddressCount(){
+       
+         academy.methods.countHolders().call().then(function(result){
+          //document.getElementById('countHolders').textContent = result;
+          console.log(result)
+        });
+
+      }
+
       async function register(){
         var fullName = web3.utils.asciiToHex(document.getElementById('fullName').value);
         var levelOfStudy = document.getElementById('levelOfStudy').value;
@@ -299,12 +320,16 @@
       
 
           count();
+
+          //getAddressCount();
+
         }).on('error', function(error){
           //document.getElementById('error').style.display = 'block';
           //document.getElementById('error').textContent = error;
         });
       }
       document.getElementById('button').addEventListener('click', register);
+      //document.getElementById('button-get').addEventListener('click', getAddressCount);
 
 
 
